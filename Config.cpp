@@ -40,3 +40,22 @@ bool loadConfig(const char* filename, Config& cfg) {
 
     return true;
 }
+
+bool saveConfig(const char* filename, const Config& cfg) {
+    std::ofstream out(filename);
+    if (!out.is_open()) return false;
+
+    out << "fieldSize " << cfg.fieldSize << "\n"
+        << "clusterCount " << cfg.clusterCount << "\n"
+        << "clusterSize " << cfg.clusterSize << "\n"
+        << "clusterBuffer " << cfg.clusterBuffer << "\n"
+        << "initialPreyRabbit " << cfg.initialPreyRabbit << "\n"
+        << "initialPreySheep " << cfg.initialPreySheep << "\n"
+        << "initialPredatorWolf " << cfg.initialPredatorWolf << "\n"
+        << "initialPredatorFox " << cfg.initialPredatorFox << "\n"
+        << "preyReproduceThreshold " << cfg.preyReproduceThreshold << "\n"
+        << "predatorReproduceThreshold " << cfg.predatorReproduceThreshold << "\n"
+        << "metabolismCost " << cfg.metabolismCost << "\n"
+        << "grassRegrowthPerTick " << cfg.grassRegrowthPerTick << "\n";
+    return true;
+}

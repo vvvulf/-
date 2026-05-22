@@ -24,13 +24,12 @@ bool RandomMoveStrategy::decideMove(
     for (auto& p : neighbors) {
         int targetId = field.agentAt(p.first, p.second);
 
-        // якщо кл≥тинка в≥льна Ч будь-хто може туди п≥ти
         if (targetId == -1) {
             nx = p.first;
             ny = p.second;
             return true;
         }
-        // якщо поточний агент Ч хижак, в≥н може випадково наступити на здобич ≥ з'њсти њњ
+        
         else if (agent.kind() == AgentKind::Predator) {
             for (Agent* other : agents) {
                 if (other && other->id == targetId && other->alive && other->kind() == AgentKind::Prey) {
@@ -55,7 +54,6 @@ bool ChasePreyStrategy::decideMove(
     Agent* target = nullptr;
     int bestDist = std::numeric_limits<int>::max();
 
-    // ЎукаЇмо найближчу живу здобич
     for (Agent* other : agents) {
 
         if (!other || !other->alive)
@@ -69,7 +67,7 @@ bool ChasePreyStrategy::decideMove(
 
         int d2 = dx * dx + dy * dy;
 
-        if (d2 > 100) // –ад≥ус зору (10 кл≥тинок, 10^2 = 100)
+        if (d2 > 100) 
             continue;
 
         if (d2 < bestDist) {
@@ -78,13 +76,11 @@ bool ChasePreyStrategy::decideMove(
         }
     }
 
-    // якщо не знайшли здобич поруч Ч рухаЇмось випадково
     if (!target) {
         RandomMoveStrategy r;
         return r.decideMove(agent, field, agents, nx, ny);
     }
 
-    // Ќапр€мок до ц≥л≥
     int sx = (target->x > agent.x) ? 1 : (target->x < agent.x) ? -1 : 0;
     int sy = (target->y > agent.y) ? 1 : (target->y < agent.y) ? -1 : 0;
 
@@ -94,25 +90,23 @@ bool ChasePreyStrategy::decideMove(
     if (field.inBounds(tx, ty)) {
         int targetId = field.agentAt(tx, ty);
 
-        //  л≥тинка в≥льна Ч крок дозволено
         if (targetId == -1) {
             nx = tx;
             ny = ty;
             return true;
         }
-        //  л≥тинка зайн€та Ч перев≥р€Їмо, чи там наша њжа (здобич)
+        
         else {
             for (Agent* other : agents) {
                 if (other && other->id == targetId && other->alive && other->kind() == AgentKind::Prey) {
                     nx = tx;
                     ny = ty;
-                    return true; // ƒозвол€Їмо наступити на кл≥тинку з≥ здобиччю!
+                    return true; 
                 }
             }
         }
     }
 
-    // Fallback рух: €кщо пр€мий шл€х заблокований ≥ншим хижаком, шукаЇмо обх≥дний в≥льний шл€х
     RandomMoveStrategy r;
     return r.decideMove(agent, field, agents, nx, ny);
 }

@@ -7,7 +7,6 @@
 #include "PopulationProcessManager.h"
 
 int main() {
-
     Config cfg;
     loadConfig("default.cfg", cfg);
 
@@ -20,7 +19,7 @@ int main() {
     SimulationUI ui;
     StatisticsManager stats;
 
-    sf::RenderWindow window({ 1200, 800 }, "Ecosystem Simulation");
+    sf::RenderWindow window({ 1200, 800 }, "Ecosystem Simulation Layout Upgrade");
     window.setFramerateLimit(60);
 
     sf::Clock clock;
@@ -29,15 +28,12 @@ int main() {
     bool running = false;
 
     while (window.isOpen()) {
-
         sf::Event e;
         while (window.pollEvent(e)) {
-
             if (e.type == sf::Event::Closed)
                 window.close();
 
             if (e.type == sf::Event::MouseButtonPressed) {
-
                 sf::Vector2f m = window.mapPixelToCoords({
                     e.mouseButton.x,
                     e.mouseButton.y
@@ -53,33 +49,38 @@ int main() {
                     sim.reset();
                     stats.reset();
                 }
+
+                if (ui.regenPressed(m)) {
+                    field.clear();
+                    field.randomizeClusters(cfg.clusterCount, cfg.clusterSize, cfg.clusterBuffer);
+                    sim.reset();
+                    sim.initializePopulation(); 
+                    stats.reset();
+                }
+
+                ui.handleConfigInteraction(m, cfg);
             }
         }
 
-        // simulation step
         if (running && clock.getElapsedTime().asSeconds() > tickDelay) {
             sim.tick();
             clock.restart();
         }
 
-        // статистика
         int prey = 0, pred = 0;
-
         for (auto& a : sim.getAgents()) {
             if (!a || !a->alive) continue;
-
             if (a->kind() == AgentKind::Prey) prey++;
             else pred++;
         }
 
         stats.update(prey, pred);
 
-        // render
         window.clear(sf::Color::White);
 
         field.draw(window, sim.getAgents(), 10.f, 10.f);
-        stats.draw(window, 600, 50, 500, 200);
-        ui.draw(window);
+        stats.draw(window, 540.f, 15.f, 640.f, 230.f, sim.getAgents());
+        ui.draw(window, cfg, prey, pred);
 
         window.display();
     }

@@ -30,7 +30,7 @@ public:
 
     virtual ~Agent() = default;
 
-    int id;   // ªÄÈÍÈÉ ID
+    int id;   
     int x;
     int y;
 

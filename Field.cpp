@@ -26,6 +26,7 @@ void GameField::placeAgent(int id, int x, int y) {
     grid[y][x] = id;
 }
 
+
 void GameField::removeAgentFrom(int x, int y) {
     if (!inBounds(x, y)) return;
     grid[y][x] = -1;
@@ -42,7 +43,6 @@ void GameField::eatFood(int x, int y, float amount) {
 }
 
 void GameField::randomizeClusters(int count, int size, int buffer) {
-
     for (auto& row : field)
         for (auto& c : row)
             c.food = 0.f;
@@ -50,18 +50,18 @@ void GameField::randomizeClusters(int count, int size, int buffer) {
     std::uniform_int_distribution<int> dist(0, n - 1);
 
     for (int i = 0; i < count; i++) {
-
         int cx = dist(rng);
         int cy = dist(rng);
 
         for (int dy = -size; dy <= size; dy++) {
             for (int dx = -size; dx <= size; dx++) {
-
                 int x = cx + dx;
                 int y = cy + dy;
 
                 if (inBounds(x, y)) {
-                    field[y][x].food = 1.f;
+                   if (dx * dx + dy * dy <= size * size) {
+                        field[y][x].food = 1.f;
+                    }
                 }
             }
         }
@@ -69,10 +69,8 @@ void GameField::randomizeClusters(int count, int size, int buffer) {
 }
 
 float GameField::foodAt(int x, int y) const {
-
     if (!inBounds(x, y))
         return 0.f;
-
     return field[y][x].food;
 }
 
@@ -91,6 +89,10 @@ void GameField::draw(
             sf::RectangleShape r({ ts, ts });
             r.setPosition(ox + x * ts, oy + y * ts);
             r.setFillColor(field[y][x].color());
+
+            r.setOutlineThickness(-1.f);
+            r.setOutlineColor(sf::Color(30, 45, 30, 120)); 
+
             w.draw(r);
 
             int idx = grid[y][x];
@@ -100,7 +102,7 @@ void GameField::draw(
                 if (!a || !a->alive) continue;
 
                 sf::CircleShape c(ts / 3);
-                c.setPosition(ox + x * ts, oy + y * ts);
+                c.setPosition(ox + x * ts + 1.5f, oy + y * ts + 1.5f); 
 
                 c.setFillColor(
                     (a->kind() == AgentKind::Prey)

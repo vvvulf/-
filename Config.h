@@ -4,8 +4,8 @@ struct Config {
     int fieldSize = 50;
 
     int clusterCount = 8;
-    int clusterSize = 20;
-    int clusterBuffer = 3;
+    int clusterSize = 10;
+    int clusterBuffer = 4;
 
     int initialPreyRabbit = 30;
     int initialPreySheep = 10;
@@ -21,3 +21,4 @@ struct Config {
 };
 
 bool loadConfig(const char* filename, Config& cfg);
+bool saveConfig(const char* filename, const Config& cfg);

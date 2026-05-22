@@ -36,7 +36,6 @@ bool PopulationStorageManager::loadSimulation(const std::string& file)
 
     agents.clear();
 
-    // reset field (ÂÀÆËÈÂÎ)
     gf = GameField(gf.size());
 
     int count;
@@ -76,7 +75,6 @@ bool PopulationStorageManager::loadSimulation(const std::string& file)
         a->x = x;
         a->y = y;
 
-        // ÊËŞ×ÎÂÅ ÂÈÏĞÀÂËÅÍÍß:
         gf.placeAgent(x, y, id);
 
         agents.push_back(std::move(a));

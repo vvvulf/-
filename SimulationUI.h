@@ -1,33 +1,37 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Config.h"
+
+struct ClickButton {
+    sf::FloatRect rect;
+    std::string action;
+};
 
 class SimulationUI {
 public:
     SimulationUI();
 
-    bool startPausePressed(sf::Vector2f mouse);
-    bool stepPressed(sf::Vector2f mouse);
-    bool resetPressed(sf::Vector2f mouse);
+    bool startPausePressed(sf::Vector2f m);
+    bool stepPressed(sf::Vector2f m);
+    bool resetPressed(sf::Vector2f m);
+    bool regenPressed(sf::Vector2f m); 
 
-    void draw(sf::RenderWindow& window) const;
-
-    bool isRunning() const { return running; }
-    void toggleRunning() { running = !running; }
+    void handleConfigInteraction(sf::Vector2f m, Config& cfg);
+    void draw(sf::RenderWindow& window, const Config& cfg, int preyCount, int predCount);
 
 private:
-    sf::RectangleShape startBtn;
-    sf::RectangleShape stepBtn;
-    sf::RectangleShape resetBtn;
-
     sf::Font font;
-    sf::Text startText;
-    sf::Text stepText;
-    sf::Text resetText;
+    std::vector<ClickButton> buttons;
 
-    bool running = false;
+    sf::RectangleShape btnStart;
+    sf::RectangleShape btnStep;
+    sf::RectangleShape btnReset;
+    sf::RectangleShape btnRegen; 
 
-    void setupButton(sf::RectangleShape& btn,
-        sf::Text& text,
-        const std::string& label,
-        float x, float y);
+    sf::Text txtStart;
+    sf::Text txtStep;
+    sf::Text txtReset;
+    sf::Text txtRegen; 
+
+    void setupConfigButtons();
 };

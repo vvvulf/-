@@ -130,12 +130,8 @@ void PopulationProcessManager::handleMovements()
 
         int targetId = gf.agentAt(nx, ny);
 
-        // =====================================================
-        //  PREY
-        // =====================================================
         if (a->kind() == AgentKind::Prey)
         {
-            // може зайти тільки в пусту клітинку
             if (!gf.isFreeAt(nx, ny))
                 continue;
 
@@ -153,9 +149,6 @@ void PopulationProcessManager::handleMovements()
             }
         }
 
-        // =====================================================
-        //  PREDATOR
-        // =====================================================
         else
         {
             bool ate = false;
@@ -166,7 +159,6 @@ void PopulationProcessManager::handleMovements()
 
                 if (victim && victim->alive && victim->kind() == AgentKind::Prey)
                 {
-                    //  їмо здобич
                     victim->alive = false;
                     gf.removeAgentFrom(victim->x, victim->y);
 
@@ -186,7 +178,6 @@ void PopulationProcessManager::handleMovements()
             if (ate)
                 continue;
 
-            // fallback рух
             if (gf.isFreeAt(nx, ny))
             {
                 gf.removeAgentFrom(a->x, a->y);
@@ -210,9 +201,6 @@ void PopulationProcessManager::handleLifecycle()
         if (!a || !a->alive)
             continue;
 
-        // =====================
-        // energy drain
-        // =====================
         a->energy -= cfg.metabolismCost;
 
         if (a->energy <= 0.f)
@@ -222,9 +210,6 @@ void PopulationProcessManager::handleLifecycle()
             continue;
         }
 
-        // =====================
-        // reproduction check
-        // =====================
         float threshold =
             (a->kind() == AgentKind::Prey)
             ? cfg.preyReproduceThreshold
@@ -233,7 +218,6 @@ void PopulationProcessManager::handleLifecycle()
         if (a->energy < threshold)
             continue;
 
-        // шукаємо вільну клітинку
         auto neighbors = Agent::neighbors8(a->x, a->y, gf.size());
 
         bool spawned = false;

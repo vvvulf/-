@@ -37,6 +37,17 @@ public:
 
     void eatFood(int x, int y, float amount = 1.0f);
     float foodAt(int x, int y) const;
+    void clear() {
+        for (int y = 0; y < n; y++) {
+            for (int x = 0; x < n; x++) {
+                field[y][x].food = 0.f;
+            }
+        }
+
+        for (int y = 0; y < n; y++) {
+            std::fill(grid[y].begin(), grid[y].end(), -1);
+        }
+    }
 
     void draw(sf::RenderWindow&,
         const std::vector<std::unique_ptr<Agent>>&,
@@ -46,6 +57,6 @@ public:
 private:
     int n;
     std::vector<std::vector<Cell>> field;
-    std::vector<std::vector<int>> grid; // id або -1
+    std::vector<std::vector<int>> grid;
     std::mt19937 rng;
 };
